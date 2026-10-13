@@ -12,21 +12,28 @@ class Game:
         print("Connect Four — you are X.")
         while True:
             self.board.print()
+
             if self.turn == "X":
                 raw = input("Column (1-7), or q: ").strip().lower()
+
                 if raw == "q":
+                    print("Game ended.")
                     return
+
                 try:
                     col = int(raw) - 1
                 except ValueError:
-                    print("Enter a column number.")
+                    print("Invalid input. Enter a column number.")
                     continue
             else:
                 col = self.ai.choose_column(self.board)
 
-            if col is None or self.board.drop(col, self.turn) is None:
-                print("Column unavailable.")
+            row = self.board.drop(col, self.turn) if col is not None else None
+
+            if row is None:
+                print("Column unavailable. Choose another column.")
                 if self.turn == "O":
+                    print("Game ended.")
                     return
                 continue
 
@@ -34,6 +41,7 @@ class Game:
                 self.board.print()
                 print(self.turn, "wins!")
                 return
+
             if self.board.full():
                 self.board.print()
                 print("Draw.")
